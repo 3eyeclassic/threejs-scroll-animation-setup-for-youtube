@@ -52,30 +52,60 @@ scene.add(torus);
  * lerp(20, 60, .75)) = 50
  * lerp(-20, -10, .1)) = -.19
  */
+function lerp(x, y, a) {
+  return (1-a) * x + a * y;
+}
 
 /**
  * 特定のスクロール率で開始、終了
  **/
 
+function scaleParcent(start, end) {
+  return (scrollPercent - start) / (end - start);
+}
+
 /**
  * スクロールアニメーション関数定義
  */
 
+const animationScripts = [];
+
 /**
  * スクロールアニメーション開始関数
  */
+animationScripts.push({
+  start:0,
+  end: 40,
+  function() {
+    camera.lookAt(box.position);
+    camera.position.set(0, 1, 10);
+    box.position.z = lerp(-15, 2, scaleParcent(0, 40));
+  },
+});
+/**
+ * スクロールアニメーション開始
+ */
+function playScollAnimation() {
+  animationScripts.forEach((animation) => {
+    if (scaleParcent >= animation.start && scaleParcent < animation.end) {
+      animation.function();
+    }
+  });
+}
 
 /**
  * ブラウザのスクロール率を導出
  */
+scrollPercent = 
+  (document.documentElement.scrollTop / 
+    (document.documentElement.scrollHeight - 
+      document.documentElement.clientHeight)) * 
+      100;
 
 //アニメーション
 const tick = () => {
   window.requestAnimationFrame(tick);
-  /**
-   * スクロールアニメーション開始
-   */
-
+  
   renderer.render(scene, camera);
 };
 
